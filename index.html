@@ -12,6 +12,12 @@
 
 <body>
     <h1>Let's Play a Game!</h1>
+    <div id="wins-text"></div>
+    <div id="losses-text"></div>
+    <div id="guesses-left"></div>
+    <div id="guesses-so-far"></div>
+    <div id="my-guess"></div>
+    <div id="computer-guess"></div>
     <script type="text/javascript">
 
         // Guess what letter I'm thinking of
@@ -23,122 +29,80 @@
         // When the player loses, increase the Losses counter and restart the game without a page refresh (just like when the user wins).
 
         // Creates an array that lists out all of the options (The Alphabet).
-        var computerGuess = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",];
+        var computerGuessOptions = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",];
         var name = prompt("What is your name?");
-        var name = prompt("What is your guess?");
+
         // Creating variables to hold the number of wins, losses, and Guesses left. They start at 0.
         var myWins = 0;
         var computerWins = 0;
         var guessesLeft = 9;
-        let totalGuesses = 9;
-        let guessedLetters = [];
-        var letterToGuess = null;
+        var guessedLetters = [];
+        var computerGuess = "";
+        var myGuess = "";
 
 
         // Create variables that hold references to the places in the HTML where we want to display things.
-        var myGuessText = document.getElementById("MyGuess-text");
-        var winsText = document.getElementById("wins-text");
-        var lossesText = document.getElementById("losses-text");
-        var guessesLeftText = document.getElementById("guessesLeft-text");
-        var computerChoiceText = document.getElementById("computerchoice-text");
+
+
+
+        var reset = function () {
+            guessesLeft = 9;
+            guessedLetters = [];
+            console.log(Math.floor(Math.random() * 26))
+            computerGuess = computerGuessOptions[Math.floor(Math.random() * computerGuessOptions.length)];
+            myGuess = "";
+            render();
+        }
+
+
+        function render() {
+            var winsText = document.getElementById("wins-text");
+            var lossesText = document.getElementById("losses-text");
+            var guessesLeftText = document.getElementById("guesses-left");
+            var guessesSoFar = document.getElementById('guesses-so-far');
+            var myGuessText = document.getElementById('my-guess');
+            var computerGuessText = document.getElementById('computer-guess');
+
+            // Display the user and computer guesses, and wins/losses/ties.
+            winsText.textContent = "wins: " + myWins;
+            lossesText.textContent = "losses: " + computerWins;
+            guessesLeftText.textContent = "guesses left: " + guessesLeft
+            guessesSoFar.textContent = "guesses so far: " + guessedLetters.join(', ')
+            myGuessText.textContent = "You chose: " + myGuess;
+            computerGuessText.textContent = "The computer chose: " + computerGuess;
+
+        }
+
 
         //When key is released it becomes the users guess
         document.onkeyup = function (event) {
+            var myKeyCode = event.keyCode;
             var myGuess = event.key;
 
-            function playGame() {
-                var winner = "";
-                var playAgain = false;
-                var myGuess = prompt("Pick a letter!");
-                myGuess = parseInt(myGuess);
-                var computerGuess = Math.floor(Math.random() * computerGuess.length);
+            if (myKeyCode > 64 && myKeyCode < 91) {
                 if (myGuess === computerGuess) {
-                    // winner = name;
-                    myWins = myWins++;
+                    myWins++;
+                    alert(name + " won the game!");
+                    reset()
                 }
                 else {
-                    // winner = "Computer"
-                    computerWins = computerWins++;
-                    guessesLeft = 9--;
-                    guessesLeft --;
-                    guessedLetters.push(userGuess);
-                    updateGuessesLeft();
-                    updateGuessesSoFar();
-                }
+                    guessesLeft--;
+                    guessedLetters.push(myGuess);
+                    if (guessesLeft === 0) {
+                        alert("Computer won the game!");
+                        reset();
+                    }
+                    else {
+                        render();
+                    }
 
-                alert(winner + " won the game!");
-
-                console.log("User= " + name);
-                console.log("User's Guess = " + usersNumber);
-                console.log("Computer'sNumber = " + computersNumber);
-                console.log("user Wins = " + userWins);
-                console.log("Computer Wins = " + computerWins);
-                playAgain = confirm("Do you want to play again?");
-
-                if (playAgain === true) {
-                    playGame();
                 }
             }
 
-            playGame();
 
-
-            function updateGuessesLeft() {
-                // Here we are grabbing the HTML element and setting it equal to the guessesLeft. (i.e. guessesLeft will get displayed in HTML)
-                document.querySelector('#guessLeft').innerHTML = "Guesses left: " + guessesLeft;
-            };
-
-            function updateLetterToGuess() {
-                this.letterToGuess = this.computerGuess[Math.floor(Math.random() * this.computerGuess.length)];
-            };
-
-            function updateGuessesSoFar() {
-                // Here we take the guesses the user has tried -- then display it as letters separated by commas. 
-                document.querySelector('#let').innerHTML = "Your Guesses so far: " + guessedLetters.join(', ');
-            };
-
-            var reset = function () {
-                totalGuesses = 9;
-                guessesLeft = 9;
-                guessedLetters = [];
-                setTimeout(function () { document.querySelector('.mantis').style.display = 'none'; }, 5000);
-                updateLetterToGuess();
-                updateGuessesLeft();
-                updateGuessesSoFar();
-            }
-
-            updateLetterToGuess();
-            updateGuessesLeft()
-
-
-
-            // Display the user and computer guesses, and wins/losses/ties.
-            myGuessText.textContent = "You chose: " + myGuess;
-            computerChoiceText.textContent = "The computer chose: " + computerGuess;
-            winsText.textContent = "wins: " + wins;
-            lossesText.textContent = "losses: " + losses;
         }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    };
 
-
-
-
-
-
-
-
-
-
-
+        reset();
     </script>
 </body>
 
